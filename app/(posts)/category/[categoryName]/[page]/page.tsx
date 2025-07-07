@@ -19,11 +19,14 @@ export function generateStaticParams() {
   const params: { categoryName: string; page: string }[] = [];
 
   categories.forEach(category => {
-    const postsForCategory = posts.filter(p => p.category === category);
-    const totalPages = Math.ceil(postsForCategory.length / POSTS_PER_PAGE);
-    for (let i = 1; i <= totalPages; i++) {
-      // 카테고리 이름을 URL에 사용할 수 있도록 인코딩합니다. 이것이 핵심입니다.
-      params.push({ categoryName: encodeURIComponent(category), page: i.toString() });
+    // 카테고리 데이터가 유효한 경우에만 파라미터를 생성합니다.
+    if (category) {
+      const postsForCategory = posts.filter(p => p.category === category);
+      const totalPages = Math.ceil(postsForCategory.length / POSTS_PER_PAGE);
+      for (let i = 1; i <= totalPages; i++) {
+        // 카테고리 이름을 URL에 사용할 수 있도록 인코딩합니다. 이것이 핵심입니다.
+        params.push({ categoryName: encodeURIComponent(category), page: i.toString() });
+      }
     }
   });
 
