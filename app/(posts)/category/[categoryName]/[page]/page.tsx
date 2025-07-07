@@ -23,7 +23,7 @@ export function generateStaticParams() {
       const postsForCategory = posts.filter(p => p.category === category);
       const totalPages = Math.ceil(postsForCategory.length / POSTS_PER_PAGE);
       for (let i = 1; i <= totalPages; i++) {
-        // [수정] encodeURIComponent를 제거하고 원본 카테고리 이름을 그대로 사용합니다.
+        // 순수한 한글 카테고리 이름을 그대로 반환합니다.
         params.push({ categoryName: category, page: i.toString() });
       }
     }
@@ -36,13 +36,15 @@ export function generateStaticParams() {
  * 특정 카테고리에 속한 게시글 목록을 페이지네이션과 함께 보여주는 페이지 컴포넌트입니다.
  */
 export default async function CategoryPostsPage({ params }: PageProps) {
-  // [수정] params로 받은 categoryName은 이미 디코딩된 순수한 한글입니다.
   const { categoryName, page } = await params;
   const pageNum = parseInt(page, 10);
   
+  // [수정] params로 받은 인코딩된 categoryName을 명시적으로 디코딩합니다.
+  const decodedCategoryName = decodeURIComponent(categoryName);
+
   const allPosts = getSortedPostsData();
-  // [수정] decodeURIComponent 호출을 제거합니다.
-  const postsForCategory = allPosts.filter(p => p.category === categoryName);
+  // [수정] 디코딩된 카테고리 이름으로 게시글을 필터링합니다.
+  const postsForCategory = allPosts.filter(p => p.category === decodedCategoryName);
 
   const totalPages = Math.ceil(postsForCategory.length / POSTS_PER_PAGE);
   const paginatedPosts = postsForCategory.slice((pageNum - 1) * POSTS_PER_PAGE, pageNum * POSTS_PER_PAGE);
@@ -51,7 +53,8 @@ export default async function CategoryPostsPage({ params }: PageProps) {
     <div className="divide-y divide-gray-200 dark:divide-gray-700">
       <div className="space-y-2 pb-8 pt-6 md:space-y-5">
         <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-          Category: {categoryName}
+          {/* [수정] 디코딩된 카테고리 이름을 제목으로 표시합니다. */}
+          Category: {decodedCategoryName}
         </h1>
       </div>
       <ul className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -63,8 +66,8 @@ export default async function CategoryPostsPage({ params }: PageProps) {
       <PaginationControls
         currentPage={pageNum}
         totalPages={totalPages}
-        // [수정] 페이지네이션 링크를 만들 때는 URL에 맞게 인코딩해줍니다.
-        basePath={`/category/${encodeURIComponent(categoryName)}`}
+        // 페이지네이션 링크는 URL에 맞게 인코딩된 파라미터를 그대로 사용합니다.
+        basePath={`/category/${categoryName}`}
       />
     </div>
   );
