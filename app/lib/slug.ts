@@ -1,19 +1,25 @@
 // app/lib/slug.ts
+
+// 1. slug 라이브러리를 import 합니다.
+// 먼저 터미널에서 `npm install slug` 또는 `yarn add slug`를 실행해주세요.
+import slug from 'slug';
+
+// slug 라이브러리는 한글을 포함한 다국어를 완벽하게 지원합니다.
+// slug.charmap['.'] = '-'; // 필요하다면 특정 문자를 어떻게 바꿀지 정의할 수도 있습니다.
+
 export function slugify(str: string): string {
-  return str
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')      // 1. 악센트 제거 (NFD 정규화)
-    .replace(/[^\w\s-]/g, '')             // 2. 알파벳/숫자/공백/하이픈 제외 문자 제거
-    .trim()                                 // 3. 앞뒤 공백 제거
-    .toLowerCase()                          // 4. 소문자 변환
-    .replace(/[\s_-]+/g, '-')              // 5. 공백/언더스코어/연속 하이픈 → 단일 하이픈
-    .replace(/^-+|-+$/g, '');               // 6. 앞뒤 하이픈 제거
+  // 2. 직접 만든 로직 대신 라이브러리를 호출합니다.
+  // 라이브러리가 null, undefined 등의 예외 케이스를 더 잘 처리해줍니다.
+  return slug(str || '');
 }
 
 export function buildSlugMap(categories: string[]): Record<string, string> {
   const map: Record<string, string> = {};
   categories.forEach(cat => {
-    map[slugify(cat)] = cat;
+    // cat이 유효한 문자열인지 확인
+    if (typeof cat === 'string' && cat.length > 0) {
+      map[slugify(cat)] = cat;
+    }
   });
   return map;
 }
