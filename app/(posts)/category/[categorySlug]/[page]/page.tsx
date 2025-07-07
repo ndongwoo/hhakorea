@@ -14,7 +14,6 @@ interface PageProps {
 export function generateStaticParams() {
   const posts = getSortedPostsData();
   const categories = Array.from(new Set(posts.map(p => p.category)));
-  const slugMap = buildSlugMap(categories);
 
   const params: { categorySlug: string; page: string }[] = [];
   categories.forEach(category => {
