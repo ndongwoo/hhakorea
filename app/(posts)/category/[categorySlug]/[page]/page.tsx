@@ -8,7 +8,7 @@ import PaginationControls from '@/app/components/PaginationControls';
 const POSTS_PER_PAGE = 10;
 
 interface PageProps {
-  params: { categorySlug: string; page: string };
+  params: Promise<{ categorySlug: string; page: string }>;
 }
 
 export function generateStaticParams() {
@@ -30,8 +30,8 @@ export function generateStaticParams() {
   return params;
 }
 
-export default function CategoryPostsPage({ params }: PageProps) {
-  const { categorySlug, page } = params;
+export default async function CategoryPostsPage({ params }: PageProps) {
+  const { categorySlug, page } = await params;
   const allPosts = getSortedPostsData();
   const categories = Array.from(new Set(allPosts.map(p => p.category)));
   const slugMap = buildSlugMap(categories);
