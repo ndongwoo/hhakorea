@@ -1,39 +1,17 @@
-// app/lib/posts.ts
+// lib/posts.ts
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
-import { Post } from '@/app/types';
+import { Post } from '@/app/types'; // 사용자님의 경로에 맞춤
 
 const postsDirectory = path.join(process.cwd(), '_posts');
 
 /**
- * Validates and normalizes a date from frontmatter.
- * Ensures it's either a valid ISO string or a Date object.
+ * 모든 게시글 데이터를 가져와 날짜순으로 정렬합니다.
+ * 데이터 유효성 검사를 강화하여 안정성을 높입니다.
  */
-function normalizeDate(dateValue: unknown, fileName: string): string {
-  if (!dateValue) {
-    throw new Error(`Post "${fileName}" is missing a 'date' in its frontmatter.`);
-  }
-  // If it's already a Date, convert to ISO string
-  if (dateValue instanceof Date) {
-    return dateValue.toISOString();
-  }
-  // If it's a string, check validity
-  if (typeof dateValue === 'string') {
-    const parsed = new Date(dateValue);
-    if (isNaN(parsed.getTime())) {
-      throw new Error(`Post "${fileName}" has an invalid 'date' value: ${dateValue}`);
-    }
-    // Return the original string if it's in ISO-ish format, else standardize
-    return parsed.toISOString();
-  }
-  throw new Error(
-    `Post "${fileName}" has a 'date' of unexpected type (${typeof dateValue}).` 
-  );
-}
-
 export function getSortedPostsData(): Post[] {
   const fileNames = fs.readdirSync(postsDirectory);
   const allPostsData = fileNames.map((fileName) => {
@@ -41,67 +19,69 @@ export function getSortedPostsData(): Post[] {
     const fullPath = path.join(postsDirectory, fileName);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const matterResult = matter(fileContents);
-    const frontmatter = matterResult.data as Record<string, unknown>;
 
-    // Normalize and validate date field
-    const date = normalizeDate(frontmatter.date, fileName);
+    const { date, title, author, category } = matterResult.data;
+    const content = matterResult.content || '';
 
-    // Validate required fields
-    if (typeof frontmatter.title !== 'string') {
-      throw new Error(`Post "${fileName}" is missing a valid 'title' in its frontmatter.`);
-    }
-    if (typeof frontmatter.author !== 'string') {
-      throw new Error(`Post "${fileName}" is missing a valid 'author' in its frontmatter.`);
-    }
-    if (typeof frontmatter.category !== 'string') {
-      throw new Error(`Post "${fileName}" is missing a valid 'category' in its frontmatter.`);
+    // --- 견고한 날짜 유효성 검사 ---
+    if (!date) {
+      throw new Error(`[Data Error] Post "${fileName}" is missing a 'date' in its frontmatter.`);
     }
 
-    // Build Post object; content left blank for listing
+    let dateString: string;
+    if (date instanceof Date) {
+      dateString = date.toISOString();
+    } else if (typeof date === 'string') {
+      dateString = date;
+    } else {
+      // 날짜가 Date 객체나 문자열이 아닌 경우, 구체적인 오류를 발생시킵니다.
+      throw new Error(`[Data Error] Post "${fileName}" has an invalid 'date' format. It must be a string or Date object.`);
+    }
+
     return {
       slug,
-      title: frontmatter.title,
-      author: frontmatter.author,
-      date,
-      category: frontmatter.category,
-      content: '',
-    } as Post;
+      title: title || 'Untitled',
+      author: author || 'Unknown',
+      date: dateString,
+      category: category || 'Uncategorized',
+      content: content,
+    };
   });
-
-  // Sort posts by date descending
   return allPostsData.sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
+/**
+ * 특정 slug를 가진 게시글 데이터와 HTML 컨텐츠를 반환합니다.
+ */
 export async function getPostData(slug: string): Promise<Post> {
   const fullPath = path.join(postsDirectory, `${slug}.md`);
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const matterResult = matter(fileContents);
-  const frontmatter = matterResult.data as Record<string, unknown>;
-
-  // Normalize and validate date
-  const date = normalizeDate(frontmatter.date, `${slug}.md`);
-
-  // Process markdown to HTML
   const processedContent = await remark().use(html).process(matterResult.content);
   const content = processedContent.toString();
+  
+  const { date, title, author, category } = matterResult.data;
 
-  // Validate required frontmatter fields as above
-  if (typeof frontmatter.title !== 'string') {
-    throw new Error(`Post "${slug}.md" is missing a valid 'title' in its frontmatter.`);
+  // --- 여기에서도 동일한 유효성 검사를 적용합니다 ---
+  if (!date) {
+    throw new Error(`[Data Error] Post "${slug}.md" is missing a 'date' in its frontmatter.`);
   }
-  if (typeof frontmatter.author !== 'string') {
-    throw new Error(`Post "${slug}.md" is missing a valid 'author' in its frontmatter.`);
-  }
-  if (typeof frontmatter.category !== 'string') {
-    throw new Error(`Post "${slug}.md" is missing a valid 'category' in its frontmatter.`);
+
+  let dateString: string;
+  if (date instanceof Date) {
+    dateString = date.toISOString();
+  } else if (typeof date === 'string') {
+    dateString = date;
+  } else {
+    throw new Error(`[Data Error] Post "${slug}.md" has an invalid 'date' format.`);
   }
 
   return {
     slug,
-    title: frontmatter.title,
-    author: frontmatter.author,
-    date,
-    category: frontmatter.category,
+    title: title || 'Untitled',
+    author: author || 'Unknown',
+    date: dateString,
+    category: category || 'Uncategorized',
     content,
   };
 }
