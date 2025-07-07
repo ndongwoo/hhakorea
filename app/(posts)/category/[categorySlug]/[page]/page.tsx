@@ -1,4 +1,5 @@
 // app/(posts)/category/[categorySlug]/[page]/page.tsx
+
 import { notFound } from 'next/navigation';
 import { getSortedPostsData } from '@/app/lib/posts';
 import { slugify, buildSlugMap } from '@/app/lib/slug';
@@ -8,7 +9,7 @@ import PaginationControls from '@/app/components/PaginationControls';
 const POSTS_PER_PAGE = 10;
 
 // 동적 경로를 위한 정적 파라미터 생성
-export async function generateStaticParams() {
+export function generateStaticParams() {
   const posts = getSortedPostsData();
   const categories = Array.from(
     new Set(
@@ -29,14 +30,7 @@ export async function generateStaticParams() {
   });
 }
 
-interface PageProps {
-  params: {
-    categorySlug: string;
-    page: string;
-  };
-}
-
-export default async function CategoryPostsPage({ params }: PageProps) {
+export default function CategoryPostsPage({ params }: { params: { categorySlug: string; page: string } }) {
   const { categorySlug, page } = params;
   const allPosts = getSortedPostsData();
   const categories = Array.from(
