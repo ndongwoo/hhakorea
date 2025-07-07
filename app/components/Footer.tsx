@@ -1,4 +1,6 @@
 // app/components/Footer.tsx
+import Link from 'next/link'; // Link를 import 합니다.
+
 export default function Footer() {
   return (
     <footer>
@@ -9,7 +11,8 @@ export default function Footer() {
         <div className="mb-2 flex space-x-2 text-sm text-gray-500 dark:text-gray-400">
           <div>{`© ${new Date().getFullYear()}`}</div>
           <div>{` • `}</div>
-          <a href="/">Hhakorea Blog</a>
+          {/* <a> 태그를 <Link>로 변경합니다. */}
+          <Link href="/">Hhakorea Blog</Link>
         </div>
       </div>
     </footer>
