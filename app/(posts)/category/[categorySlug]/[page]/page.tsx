@@ -8,7 +8,7 @@ import PaginationControls from '@/app/components/PaginationControls';
 
 const POSTS_PER_PAGE = 10;
 
-// 동적 경로를 위한 정적 파라미터 생성
+// 동적 경로를 위한 정적 파라미터 생성 (동기 함수)
 export function generateStaticParams() {
   const posts = getSortedPostsData();
   const categories = Array.from(
@@ -30,8 +30,9 @@ export function generateStaticParams() {
   });
 }
 
-export default function CategoryPostsPage({ params }: { params: { categorySlug: string; page: string } }) {
-  const { categorySlug, page } = params;
+// 컴포넌트는 비동기 함수로 정의하여 params를 await 처리
+export default async function CategoryPostsPage({ params }: { params: Promise<{ categorySlug: string; page: string }> }) {
+  const { categorySlug, page } = await params;
   const allPosts = getSortedPostsData();
   const categories = Array.from(
     new Set(
