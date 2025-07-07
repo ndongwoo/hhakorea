@@ -7,13 +7,18 @@ import PaginationControls from '@/app/components/PaginationControls';
 
 const POSTS_PER_PAGE = 10;
 
-interface PageProps {
-  params: Promise<{ categorySlug: string; page: string }>;
-}
-
-export function generateStaticParams() {
+// 동적 라우트에 대해 정적 페이지를 생성하기 위한 파라미터 목록 반환
+export async function generateStaticParams(): Promise<{
+  categorySlug: string;
+  page: string;
+}[]> {
   const posts = getSortedPostsData();
-  const categories = Array.from(new Set(posts.map(p => p.category)));
+  // undefined 또는 빈 문자열 필터링 추가
+  const categories = Array.from(
+    new Set(
+      posts.map(p => p.category).filter((c): c is string => typeof c === 'string' && c)
+    )
+  );
   const params: { categorySlug: string; page: string }[] = [];
 
   categories.forEach(category => {
@@ -30,10 +35,22 @@ export function generateStaticParams() {
   return params;
 }
 
-export default async function CategoryPostsPage({ params }: PageProps) {
-  const { categorySlug, page } = await params;
+interface PageProps {
+  params: {
+    categorySlug: string;
+    page: string;
+  };
+}
+
+export default function CategoryPostsPage({ params }: PageProps) {
+  const { categorySlug, page } = params;
   const allPosts = getSortedPostsData();
-  const categories = Array.from(new Set(allPosts.map(p => p.category)));
+  // undefined 또는 빈 문자열 필터링 추가
+  const categories = Array.from(
+    new Set(
+      allPosts.map(p => p.category).filter((c): c is string => typeof c === 'string' && c)
+    )
+  );
   const slugMap = buildSlugMap(categories);
 
   const categoryName = slugMap[categorySlug];
