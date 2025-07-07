@@ -7,16 +7,17 @@ import PaginationControls from '@/app/components/PaginationControls';
 
 const POSTS_PER_PAGE = 10;
 
+// --- FIX START ---
+// 타입 에러를 해결하기 위해 params를 다시 Promise 타입으로 변경합니다.
 interface PageProps {
-  // Promise로 감싸지 않는 것이 일반적입니다. Next.js가 이미 resolve된 값을 전달합니다.
-  params: { categorySlug: string; page: string };
+  params: Promise<{ categorySlug: string; page: string }>;
 }
+// --- FIX END ---
 
 export function generateStaticParams() {
   const posts = getSortedPostsData();
 
-  // --- FIX START ---
-  // 1. post.category가 실제로 존재하는지 확인하고, 문자열인 경우에만 필터링합니다.
+  // post.category가 실제로 존재하는지 확인하고, 문자열인 경우에만 필터링합니다.
   const categories = Array.from(
     new Set(
       posts
@@ -24,7 +25,6 @@ export function generateStaticParams() {
         .filter((c): c is string => typeof c === 'string' && c.length > 0)
     )
   );
-  // --- FIX END ---
 
   const params: { categorySlug: string; page: string }[] = [];
 
@@ -43,9 +43,11 @@ export function generateStaticParams() {
   return params;
 }
 
-// page 컴포넌트의 params는 async/await가 필요 없습니다.
-export default function CategoryPostsPage({ params }: PageProps) {
-  const { categorySlug, page } = params; // await 제거
+// --- FIX START ---
+// 컴포넌트를 async로 만들고 params를 await 합니다.
+export default async function CategoryPostsPage({ params }: PageProps) {
+  const { categorySlug, page } = await params;
+  // --- FIX END ---
   const allPosts = getSortedPostsData();
   const categories = Array.from(new Set(allPosts.map(p => p.category).filter(Boolean)));
   const slugMap = buildSlugMap(categories as string[]);
