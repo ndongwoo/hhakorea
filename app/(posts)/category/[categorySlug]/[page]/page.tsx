@@ -7,50 +7,45 @@ import PaginationControls from '@/app/components/PaginationControls';
 
 const POSTS_PER_PAGE = 10;
 
-// --- FIX START ---
-// 타입 에러를 해결하기 위해 params를 다시 Promise 타입으로 변경합니다.
-interface PageProps {
-  params: Promise<{ categorySlug: string; page: string }>;
-}
-// --- FIX END ---
-
-export function generateStaticParams() {
+export async function generateStaticParams() {
   const posts = getSortedPostsData();
-
-  // post.category가 실제로 존재하는지 확인하고, 문자열인 경우에만 필터링합니다.
   const categories = Array.from(
     new Set(
       posts
         .map(p => p.category)
-        .filter((c): c is string => typeof c === 'string' && c.length > 0)
+        .filter((c): c is string => Boolean(c && typeof c === 'string'))
     )
   );
 
-  const params: { categorySlug: string; page: string }[] = [];
-
-  categories.forEach(category => {
-    // 이제 category는 항상 유효한 문자열이므로 slugify가 안전합니다.
+  return categories.flatMap(category => {
     const slug = slugify(category);
     const totalPages = Math.ceil(
       posts.filter(p => p.category === category).length / POSTS_PER_PAGE
     );
 
-    for (let i = 1; i <= totalPages; i++) {
-      params.push({ categorySlug: slug, page: i.toString() });
-    }
+    return Array.from({ length: totalPages }, (_, i) => ({
+      categorySlug: slug,
+      page: (i + 1).toString(),
+    }));
   });
-
-  return params;
 }
 
-// --- FIX START ---
-// 컴포넌트를 async로 만들고 params를 await 합니다.
-export default async function CategoryPostsPage({ params }: PageProps) {
-  const { categorySlug, page } = await params;
-  // --- FIX END ---
+interface PageProps {
+  params: {
+    categorySlug: string;
+    page: string;
+  };
+}
+
+export default function CategoryPostsPage({ params }: PageProps) {
+  const { categorySlug, page } = params;
   const allPosts = getSortedPostsData();
-  const categories = Array.from(new Set(allPosts.map(p => p.category).filter(Boolean)));
-  const slugMap = buildSlugMap(categories as string[]);
+  const categories = Array.from(
+    new Set(
+      allPosts.map(p => p.category).filter((c): c is string => Boolean(c))
+    )
+  );
+  const slugMap = buildSlugMap(categories);
 
   const categoryName = slugMap[categorySlug];
   if (!categoryName) {
@@ -67,22 +62,17 @@ export default async function CategoryPostsPage({ params }: PageProps) {
 
   return (
     <div className="divide-y divide-gray-200 dark:divide-gray-700">
-      {/* 헤더 */}
       <div className="space-y-2 pb-8 pt-6 md:space-y-5">
         <h1 className="text-3xl font-extrabold tracking-tight">
           Category: {categoryName}
         </h1>
       </div>
-
-      {/* 포스트 리스트 */}
       <ul className="divide-y divide-gray-200 dark:divide-gray-700">
         {paginatedPosts.length === 0 && <p>No posts found.</p>}
         {paginatedPosts.map(post => (
           <PostCard key={post.slug} post={post} />
         ))}
       </ul>
-
-      {/* 페이지네이션 */}
       <PaginationControls
         currentPage={pageNum}
         totalPages={totalPages}

@@ -12,7 +12,6 @@ export default function CategoriesPage() {
       <div className="space-y-2 pb-8 pt-6 md:space-y-5">
         <h1 className="text-3xl font-extrabold">Categories</h1>
       </div>
-
       <div className="flex flex-wrap pt-8">
         {categories.map(category => {
           const slug = slugify(category);
