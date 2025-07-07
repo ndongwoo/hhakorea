@@ -8,8 +8,8 @@ import PaginationControls from '@/app/components/PaginationControls';
 
 const POSTS_PER_PAGE = 10;
 
-// 동적 경로를 위한 정적 파라미터 생성 (동기 함수)
-export function generateStaticParams() {
+// 동적 경로를 위한 정적 파라미터 생성
+export async function generateStaticParams() {
   const posts = getSortedPostsData();
   const categories = Array.from(
     new Set(
@@ -30,8 +30,12 @@ export function generateStaticParams() {
   });
 }
 
-// 컴포넌트는 비동기 함수로 정의하여 params를 await 처리
-export default async function CategoryPostsPage({ params }: { params: Promise<{ categorySlug: string; page: string }> }) {
+// archive 페이지와 동일한 params 패턴 사용
+interface PageProps {
+  params: Promise<{ categorySlug: string; page: string }>;
+}
+
+export default async function CategoryPostsPage({ params }: PageProps) {
   const { categorySlug, page } = await params;
   const allPosts = getSortedPostsData();
   const categories = Array.from(
@@ -55,18 +59,13 @@ export default async function CategoryPostsPage({ params }: { params: Promise<{ 
   );
 
   return (
-    <div className="divide-y divide-gray-200 dark:divide-gray-700">
-      <div className="space-y-2 pb-8 pt-6 md:space-y-5">
-        <h1 className="text-3xl font-extrabold tracking-tight">
-          Category: {categoryName}
-        </h1>
-      </div>
-      <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-        {paginated.length === 0 && <p>No posts found.</p>}
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Category: {categoryName}</h1>
+      <div className="grid gap-4">
         {paginated.map(post => (
           <PostCard key={post.slug} post={post} />
         ))}
-      </ul>
+      </div>
       <PaginationControls
         currentPage={pageNum}
         totalPages={totalPages}
