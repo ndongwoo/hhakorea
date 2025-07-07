@@ -4,12 +4,20 @@ import { slugify, buildSlugMap } from '@/app/lib/category';
 
 import PostCard from '@/app/components/PostCard';
 import PaginationControls from '@/app/components/PaginationControls';
+import { notFound } from 'next/navigation';
 
 const POSTS_PER_PAGE = 10;
 
 interface PageProps {
   params: Promise<{ categoryName: string; page: string }>;
 }
+
+export type PageProps = {
+  params: {
+    categorySlug: string;
+    page: string;
+  };
+};
 
 export function generateStaticParams() {
   const posts = getSortedPostsData();
@@ -28,11 +36,7 @@ export function generateStaticParams() {
   return params;
 }
 
-/**
- * 특정 카테고리에 속한 게시글 목록을 페이지네이션과 함께 보여주는 페이지 컴포넌트입니다.
- */
-
-export default async function CategoryPostsPage({ params }: PageProps) {
+export default function CategoryPostsPage({ params }: PageProps) {
   const { categorySlug, page } = params;
   const allPosts = getSortedPostsData();
   const categories = Array.from(new Set(allPosts.map(p => p.category)));
@@ -41,12 +45,11 @@ export default async function CategoryPostsPage({ params }: PageProps) {
   // 슬러그를 원본 카테고리명으로 변환
   const categoryName = slugMap[categorySlug];
   if (!categoryName) {
-    // 없는 슬러그라면 404 처리
     return notFound();
   }
 
   const postsForCategory = allPosts.filter(p => p.category === categoryName);
-  const pageNum = parseInt(page, 10);
+  const pageNum = Number(page);
   const paginatedPosts = postsForCategory.slice((pageNum - 1) * POSTS_PER_PAGE, pageNum * POSTS_PER_PAGE);
 
   return (
