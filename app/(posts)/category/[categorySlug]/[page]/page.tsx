@@ -8,10 +8,6 @@ import { notFound } from 'next/navigation';
 
 const POSTS_PER_PAGE = 10;
 
-interface PageProps {
-  params: Promise<{ categoryName: string; page: string }>;
-}
-
 export type PageProps = {
   params: {
     categorySlug: string;
