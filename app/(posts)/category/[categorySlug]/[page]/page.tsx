@@ -7,21 +7,29 @@ import PaginationControls from '@/app/components/PaginationControls';
 
 const POSTS_PER_PAGE = 10;
 
-// 동적 라우트에 대해 정적 페이지를 생성하기 위한 파라미터 목록 반환
-export async function generateStaticParams(): Promise<{
-  categorySlug: string;
-  page: string;
-}[]> {
+interface PageProps {
+  // Promise로 감싸지 않는 것이 일반적입니다. Next.js가 이미 resolve된 값을 전달합니다.
+  params: { categorySlug: string; page: string };
+}
+
+export function generateStaticParams() {
   const posts = getSortedPostsData();
-  // undefined 또는 빈 문자열 필터링 추가
+
+  // --- FIX START ---
+  // 1. post.category가 실제로 존재하는지 확인하고, 문자열인 경우에만 필터링합니다.
   const categories = Array.from(
     new Set(
-      posts.map(p => p.category).filter((c): c is string => typeof c === 'string' && c)
+      posts
+        .map(p => p.category)
+        .filter((c): c is string => typeof c === 'string' && c.length > 0)
     )
   );
+  // --- FIX END ---
+
   const params: { categorySlug: string; page: string }[] = [];
 
   categories.forEach(category => {
+    // 이제 category는 항상 유효한 문자열이므로 slugify가 안전합니다.
     const slug = slugify(category);
     const totalPages = Math.ceil(
       posts.filter(p => p.category === category).length / POSTS_PER_PAGE
@@ -35,23 +43,12 @@ export async function generateStaticParams(): Promise<{
   return params;
 }
 
-interface PageProps {
-  params: {
-    categorySlug: string;
-    page: string;
-  };
-}
-
+// page 컴포넌트의 params는 async/await가 필요 없습니다.
 export default function CategoryPostsPage({ params }: PageProps) {
-  const { categorySlug, page } = params;
+  const { categorySlug, page } = params; // await 제거
   const allPosts = getSortedPostsData();
-  // undefined 또는 빈 문자열 필터링 추가
-  const categories = Array.from(
-    new Set(
-      allPosts.map(p => p.category).filter((c): c is string => typeof c === 'string' && c)
-    )
-  );
-  const slugMap = buildSlugMap(categories);
+  const categories = Array.from(new Set(allPosts.map(p => p.category).filter(Boolean)));
+  const slugMap = buildSlugMap(categories as string[]);
 
   const categoryName = slugMap[categorySlug];
   if (!categoryName) {
