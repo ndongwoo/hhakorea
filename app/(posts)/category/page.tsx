@@ -27,7 +27,7 @@ export default function CategoriesPage() {
         {categories.map((category) => (
           <div key={category} className="mb-2 mr-5 mt-2">
             <Link
-              href={`/category/${encodeURIComponent(category)}/1`}
+              href={`/category/${category}/1`}
               className="mr-3 text-lg font-medium uppercase text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
             >
               {category}

@@ -15,18 +15,15 @@ interface PageProps {
  */
 export function generateStaticParams() {
   const posts = getSortedPostsData();
-  const categories = [...new Set(posts.map((post) => post.category))];
+  const categories = Array.from(new Set(posts.map(p => p.category)));
   const params: { categoryName: string; page: string }[] = [];
 
   categories.forEach(category => {
-    // 카테고리 데이터가 유효한 경우에만 파라미터를 생성합니다.
-    if (category) {
-      const postsForCategory = posts.filter(p => p.category === category);
-      const totalPages = Math.ceil(postsForCategory.length / POSTS_PER_PAGE);
-      for (let i = 1; i <= totalPages; i++) {
-        // 카테고리 이름을 URL에 사용할 수 있도록 인코딩합니다. 이것이 핵심입니다.
-        params.push({ categoryName: encodeURIComponent(category), page: i.toString() });
-      }
+    const postsForCategory = posts.filter(p => p.category === category);
+    const totalPages = Math.ceil(postsForCategory.length / POSTS_PER_PAGE);
+    for (let i = 1; i <= totalPages; i++) {
+      // ❌ encodeURIComponent(category) →
+      params.push({ categoryName: category, page: i.toString() });
     }
   });
 
@@ -41,10 +38,10 @@ export default async function CategoryPostsPage({ params }: PageProps) {
   const pageNum = parseInt(page, 10);
   
   // URL 파라미터로 받은 인코딩된 카테고리 이름을 다시 원래의 한글로 디코딩합니다.
-  const decodedCategoryName = decodeURIComponent(categoryName);
+  //const decodedCategoryName = decodeURIComponent(categoryName);
 
   const allPosts = getSortedPostsData();
-  const postsForCategory = allPosts.filter(p => p.category === decodedCategoryName);
+  const postsForCategory = allPosts.filter(p => p.category === categoryName);
 
   const totalPages = Math.ceil(postsForCategory.length / POSTS_PER_PAGE);
   const paginatedPosts = postsForCategory.slice((pageNum - 1) * POSTS_PER_PAGE, pageNum * POSTS_PER_PAGE);
@@ -53,7 +50,7 @@ export default async function CategoryPostsPage({ params }: PageProps) {
     <div className="divide-y divide-gray-200 dark:divide-gray-700">
       <div className="space-y-2 pb-8 pt-6 md:space-y-5">
         <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-          Category: {decodedCategoryName}
+          Category: {categoryName}
         </h1>
       </div>
       <ul className="divide-y divide-gray-200 dark:divide-gray-700">
