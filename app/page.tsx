@@ -11,10 +11,13 @@ export default function HomePage() {
     <>
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div className="space-y-2 pb-8 pt-6 md:space-y-5">
+	<img src="/files/attach/images/admin/logos.jpg" alt="사랑나눔의사회 배너" className="w-full h-auto rounded-lg shadow" />
           <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
-            문의전화 02-969-3110
+            사랑나눔의사회 홈페이지에 오신 것을 환영합니다.<br />
+	    사랑나눔의사회는 여러분 주변의 이웃들에게 사랑과 정성으로 의료봉사와 건강한 삶을 위한 지원을 하는 단체입니다.
           </p>
           <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
+            문의전화 02-969-3110 <br />
             후원계좌 하나은행 200-000010-04105
           </p>
         </div>
