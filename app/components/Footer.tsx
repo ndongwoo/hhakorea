@@ -14,7 +14,7 @@ export default function Footer() {
           {/* <a> 태그를 <Link>로 변경합니다. */}
           <Link href="/">Home</Link>
           <div>{` • `}</div>
-          <Link href="https://www.acrc.go.kr/">공익위반제보</Link>
+          <Link href="https://www.acrc.go.kr/" target="_blank">공익위반제보</Link>
         </div>
       </div>
     </footer>

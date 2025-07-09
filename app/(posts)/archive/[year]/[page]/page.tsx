@@ -11,7 +11,6 @@ interface PageProps {
 
 export function generateStaticParams() {
   const posts = getSortedPostsData();
-  // 이제 post.date는 항상 문자열이므로 .substring()을 안전하게 사용할 수 있습니다.
   const years = [...new Set(posts.map(post => post.date.substring(0, 4)))];
   const params: { year: string; page: string }[] = [];
 
@@ -40,18 +39,25 @@ export default async function ArchivePostsPage({ params }: PageProps) {
   );
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Posts from {year}</h1>
-      <div className="grid gap-4">
-        {paginatedPosts.map(post => (
+    <div className="divide-y divide-gray-200 dark:divide-gray-700">
+      <div className="space-y-2 pb-8 pt-6 md:space-y-5">
+        <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
+          Archive: {year}
+        </h1>
+      </div>
+      <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+        {!paginatedPosts.length && 'No posts found.'}
+        {paginatedPosts.map((post) => (
           <PostCard key={post.slug} post={post} />
         ))}
-      </div>
-      <PaginationControls
-        currentPage={pageNum}
-        totalPages={totalPages}
-        basePath={`/archive/${year}`}
-      />
+      </ul>
+      {totalPages > 1 && (
+        <PaginationControls
+          currentPage={pageNum}
+          totalPages={totalPages}
+          basePath={`/archive/${year}`}
+        />
+      )}
     </div>
   );
 }
