@@ -3,12 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* CSS 변수는 :root 안에만 둡니다 */
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -19,6 +17,8 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
   }
 }
 
