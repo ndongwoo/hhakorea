@@ -1,6 +1,7 @@
 // app/(posts)/posts/[slug]/page.tsx
 import { getPostData, getSortedPostsData } from '@/app/lib/posts';
 import { notFound } from 'next/navigation';
+import Link from 'next/link'; // [추가] Link 컴포넌트를 불러옵니다.
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -21,11 +22,9 @@ export default async function PostPage({ params }: PageProps) {
   const displayDate = new Date(post.date).toISOString().split('T')[0];
 
   return (
-    // [수정] <article> 태그에 prose 클래스를 적용하면 제목(h1)까지 영향을 주므로,
-    // 본문 내용(div)에만 적용하도록 구조를 변경합니다.
     <article className="divide-y divide-gray-200 dark:divide-gray-700">
       <header className="pt-6 xl:pb-6">
-        <div className="space-y-1 text-center">
+        <div className="space-y-4 text-center">
           <dl className="space-y-10">
             <div>
               <dt className="sr-only">Published on</dt>
@@ -39,12 +38,34 @@ export default async function PostPage({ params }: PageProps) {
               {post.title}
             </h1>
           </div>
+          {/* [추가] 작성자와 카테고리 정보를 표시하는 섹션 */}
+          <div className="flex justify-center items-center gap-4 pt-2 text-sm text-gray-500 dark:text-gray-400">
+            <dl>
+              <dt className="sr-only">Author</dt>
+              <dd>
+                {/* 작성자 이름을 표시합니다. */}
+                <p>{post.author}</p>
+              </dd>
+            </dl>
+            <span>•</span>
+            <dl>
+              <dt className="sr-only">Category</dt>
+              <dd>
+                {/* 카테고리를 클릭 가능한 링크로 만듭니다. */}
+                <Link
+                  href={`/category/${encodeURIComponent(post.category)}/1`}
+                  className="font-medium text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                >
+                  {post.category}
+                </Link>
+              </dd>
+            </dl>
+          </div>
         </div>
       </header>
 
       <div className="divide-y divide-gray-200 pb-8 dark:divide-gray-700 xl:divide-y-0">
         <div className="divide-y divide-gray-200 dark:divide-gray-700 xl:col-span-3 xl:row-span-2 xl:pb-0">
-          {/* [핵심] 이 div에 prose 클래스를 적용하여 본문 스타일에만 영향을 주도록 합니다. */}
           <div 
             className="prose max-w-none pb-8 pt-10 dark:prose-invert"
             dangerouslySetInnerHTML={{ __html: post.content }} 
