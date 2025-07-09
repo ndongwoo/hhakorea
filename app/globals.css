@@ -1,12 +1,11 @@
-/* app/globals.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* CSS 변수는 :root 안에만 둡니다 */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+}
+
+@theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -17,9 +16,20 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
   }
+}
+
+@layer base {
+  h2 {
+    @apply text-3xl font-bold;
+  }
+  h3 {
+    @apply text-2xl font-bold;
+  }
+  h4 {
+    @apply text-2xl font-bold;
+  }
+  /* 다른 태그들도 필요에 따라 추가 */
 }
 
 body {
