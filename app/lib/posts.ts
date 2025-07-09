@@ -4,7 +4,8 @@ import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
-import { Post } from '@/app/types'; // 사용자님의 경로에 맞춤
+import remarkBreaks from 'remark-breaks'; // [추가] remark-breaks 플러그인을 불러옵니다.
+import { Post } from '@/app/types';
 
 const postsDirectory = path.join(process.cwd(), '_posts');
 
@@ -23,7 +24,6 @@ export function getSortedPostsData(): Post[] {
     const { date, title, author, category } = matterResult.data;
     const content = matterResult.content || '';
 
-    // --- 견고한 날짜 유효성 검사 ---
     if (!date) {
       throw new Error(`[Data Error] Post "${fileName}" is missing a 'date' in its frontmatter.`);
     }
@@ -34,7 +34,6 @@ export function getSortedPostsData(): Post[] {
     } else if (typeof date === 'string') {
       dateString = date;
     } else {
-      // 날짜가 Date 객체나 문자열이 아닌 경우, 구체적인 오류를 발생시킵니다.
       throw new Error(`[Data Error] Post "${fileName}" has an invalid 'date' format. It must be a string or Date object.`);
     }
 
@@ -57,12 +56,17 @@ export async function getPostData(slug: string): Promise<Post> {
   const fullPath = path.join(postsDirectory, `${slug}.md`);
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const matterResult = matter(fileContents);
-  const processedContent = await remark().use(html).process(matterResult.content);
+  
+  // [수정] .use(remarkBreaks)를 추가하여 줄바꿈을 <br> 태그로 변환하도록 설정합니다.
+  const processedContent = await remark()
+    .use(html)
+    .use(remarkBreaks) // 👈 이 줄을 추가하세요.
+    .process(matterResult.content);
+  
   const content = processedContent.toString();
   
   const { date, title, author, category } = matterResult.data;
 
-  // --- 여기에서도 동일한 유효성 검사를 적용합니다 ---
   if (!date) {
     throw new Error(`[Data Error] Post "${slug}.md" is missing a 'date' in its frontmatter.`);
   }
