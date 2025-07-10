@@ -22,6 +22,7 @@ export default function HomePage() {
             <Link
               href="https://pf.kakao.com/_Kixgexj"
               aria-label="카카오톡 채널"
+	      target="_blank"
             >
 	    카카오톡 채널
             </Link>	    
