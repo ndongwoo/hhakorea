@@ -18,7 +18,13 @@ export default function HomePage() {
           </p>
           <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
             문의전화 02-969-3110 <br />
-            후원계좌 하나은행 200-000010-04105
+            후원계좌 하나은행 200-000010-04105 <br />
+            <Link
+              href="https://pf.kakao.com/_Kixgexj"
+              aria-label="카카오톡 채널"
+            >
+	    카카오톡 채널
+            </Link>	    
           </p>
         </div>
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
