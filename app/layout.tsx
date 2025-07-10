@@ -8,8 +8,8 @@ import Footer from './components/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'Hhakorea Blog',
-  description: 'A blog by Hhakorea',
+  title: '사랑나눔의사회',
+  description: 'A blog by HHA Korea',
 };
 
 export default function RootLayout({
