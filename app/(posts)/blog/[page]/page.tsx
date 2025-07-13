@@ -32,7 +32,7 @@ export default async function BlogPage({ params }: PageProps) {
                     All Posts
                 </h1>
                 <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
-                    블로그의 모든 게시글 목록입니다.
+                    모든 게시글 목록입니다.
                 </p>
             </div>
             {/* [수정] 게시글 목록을 ul 태그로 감싸 테마를 적용합니다. */}

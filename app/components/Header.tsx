@@ -1,9 +1,10 @@
 // app/components/Header.tsx
 import Link from 'next/link';
-import Search from './Search'; // Search 컴포넌트를 불러옵니다.
+import Search from './Search';
 
 export default function Header() {
   return (
+    // [수정] flex-col을 기본으로 하고, sm(640px) 이상일 때만 flex-row로 변경합니다.
     <header className="flex flex-col sm:flex-row items-center justify-between py-10">
       <div>
         <Link href="/" aria-label="Hhakorea Blog">
@@ -17,21 +18,23 @@ export default function Header() {
           </div>
         </Link>
       </div>
-      <div className="flex items-center space-x-4 leading-5 mt-4 sm:mt-0 sm:space-x-6">
-        <Link href="/blog/1" className="font-medium text-gray-900 dark:text-gray-100">
-          전체 보기
-        </Link>
-        <Link href="/category" className="font-medium text-gray-900 dark:text-gray-100">
-          주제별 보기
-        </Link>
-        <Link href="/archive" className="font-medium text-gray-900 dark:text-gray-100">
-          연도별 보기
-        </Link>
-        <Link href="https://docs.google.com/forms/d/e/1FAIpQLSdeeAqubMZacUV1Q2yDoRUtZMU26GM7WcgaJJZlN5fkVsnDHg/viewform?usp=preview" target="_blank" className="font-medium text-gray-900 dark:text-gray-100">
+      {/* [수정] 메뉴와 검색창을 감싸는 div 추가, 반응형 레이아웃 적용 */}
+      <div className="flex flex-col sm:flex-row items-center w-full sm:w-auto mt-4 sm:mt-0">
+        <nav className="flex space-x-4 leading-5 sm:space-x-6 mb-4 sm:mb-0">
+          <Link href="/blog/1" className="font-medium text-gray-900 dark:text-gray-100">
+            전체
+          </Link>
+          <Link href="/category" className="font-medium text-gray-900 dark:text-gray-100">
+            주제별
+          </Link>
+          <Link href="/archive" className="font-medium text-gray-900 dark:text-gray-100">
+            연도별
+          </Link>
+        </nav>
+        <div className="w-full sm:w-auto sm:ml-6">
+          <Link href="https://docs.google.com/forms/d/e/1FAIpQLSdeeAqubMZacUV1Q2yDoRUtZMU26GM7WcgaJJZlN5fkVsnDHg/viewform?usp=preview" target="_blank" className="font-medium text-gray-900 dark:text-gray-100">
           후원하기
-        </Link>
-        {/* [추가] 검색창을 헤더의 오른쪽에 추가합니다. */}
-        <div className="w-full sm:w-auto">
+          </Link>
           <Search />
         </div>
       </div>

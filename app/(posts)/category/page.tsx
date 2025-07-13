@@ -20,7 +20,7 @@ export default function CategoriesPage() {
           Categories
         </h1>
         <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
-          블로그의 모든 카테고리 목록입니다.
+          주제별 게시글 목록입니다.
         </p>
       </div>
       <div className="flex flex-wrap pt-8">
