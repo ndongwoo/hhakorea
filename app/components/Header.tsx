@@ -30,11 +30,11 @@ export default function Header() {
           <Link href="/archive" className="font-medium text-gray-900 dark:text-gray-100">
             연도별
           </Link>
-        </nav>
-        <div className="w-full sm:w-auto sm:ml-6">
           <Link href="https://docs.google.com/forms/d/e/1FAIpQLSdeeAqubMZacUV1Q2yDoRUtZMU26GM7WcgaJJZlN5fkVsnDHg/viewform?usp=preview" target="_blank" className="font-medium text-gray-900 dark:text-gray-100">
           후원하기
           </Link>
+        </nav>
+        <div className="w-full sm:w-auto sm:ml-6">
           <Search />
         </div>
       </div>
