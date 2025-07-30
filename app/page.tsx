@@ -17,14 +17,14 @@ export default function HomePage() {
 	    사랑나눔의사회는 여러분 주변의 이웃들에게 사랑과 정성으로 의료봉사와 건강한 삶을 위한 지원을 하는 단체입니다.
           </p>
           <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
-            문의전화 02-969-3110 <br />
-            후원계좌 하나은행 200-000010-04105 <br />
+            <strong>문의전화</strong> 02-969-3110 <br />
+            <strong>후원계좌</strong> 하나은행 200-000010-04105 <br />
             <Link
               href="https://pf.kakao.com/_Kixgexj"
               aria-label="카카오톡 채널"
 	      target="_blank"
             >
-	    카카오톡 채널
+	    <strong>카카오톡 채널</strong>
             </Link>	    
           </p>
         </div>
