@@ -2,17 +2,11 @@
 
 name: 📝 새 블로그 포스트 작성
 description: 이 템플릿을 사용하여 새 블로그 포스트를 작성합니다.
-title: "[POST] "
-labels: ["new-post"] # 이 이슈에 자동으로 'new-post' 라벨을 붙입니다.
+# 'title: "[POST] "' 줄을 삭제했습니다.
+# 'labels'는 유지합니다.
+labels: ["new-post"]
 body:
-  - type: input
-    id: title
-    attributes:
-      label: 글 제목 (Title)
-      description: "포스트의 제목을 입력하세요."
-      placeholder: "예: 1월 활동 소식"
-    validations:
-      required: true
+  # 'id: title' (글 제목) 필드 블록을 여기서 완전히 삭제했습니다.
 
   - type: textarea
     id: body
@@ -29,4 +23,4 @@ body:
         
         이미지를 추가하려면 여기에 끌어다 놓으세요.
     validations:
-      required: true
+      required: true      
