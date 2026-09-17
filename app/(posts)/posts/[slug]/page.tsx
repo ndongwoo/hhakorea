@@ -1,5 +1,5 @@
 // app/(posts)/posts/[slug]/page.tsx
-import Script from 'next/script';
+import CommentSidecar from '@/app/components/CommentSidecar';
 import { getPostData, getSortedPostsData } from '@/app/lib/posts';
 import { notFound } from 'next/navigation';
 import Link from 'next/link'; // [추가] Link 컴포넌트를 불러옵니다.
@@ -73,14 +73,7 @@ export default async function PostPage({ params }: PageProps) {
           />
 
           <div className="pt-8">
-            <aside id="comment-sidecar"></aside>
-
-            <Script
-              src="https://comments.mycafe24.com/comment-sidecar-js-delivery.php"
-              strategy="afterInteractive"
-              data-site="https://hhakorea.org"
-              data-page-id={slug}
-            />
+            <CommentSidecar pageId={slug} />
           </div>
             
         </div>
