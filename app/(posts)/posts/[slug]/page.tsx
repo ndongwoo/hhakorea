@@ -1,4 +1,5 @@
 // app/(posts)/posts/[slug]/page.tsx
+import Script from 'next/script';
 import { getPostData, getSortedPostsData } from '@/app/lib/posts';
 import { notFound } from 'next/navigation';
 import Link from 'next/link'; // [추가] Link 컴포넌트를 불러옵니다.
@@ -70,6 +71,20 @@ export default async function PostPage({ params }: PageProps) {
             className="prose max-w-none pb-8 pt-10 dark:prose-invert"
             dangerouslySetInnerHTML={{ __html: post.content }} 
           />
+
+          {slug === 'post_00633' && (
+            <div className="pt-8">
+              <aside id="comment-sidecar"></aside>
+
+              <Script
+                src="https://comments.mycafe24.com/comment-sidecar-js-delivery.php"
+                strategy="afterInteractive"
+                data-site="https://hhakorea.org"
+                data-page-id={slug}
+              />
+            </div>
+          )}            
+            
         </div>
       </div>
     </article>
