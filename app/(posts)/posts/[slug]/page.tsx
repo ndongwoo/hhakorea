@@ -72,18 +72,16 @@ export default async function PostPage({ params }: PageProps) {
             dangerouslySetInnerHTML={{ __html: post.content }} 
           />
 
-          {slug === 'post_00633' && (
-            <div className="pt-8">
-              <aside id="comment-sidecar"></aside>
+          <div className="pt-8">
+            <aside id="comment-sidecar"></aside>
 
-              <Script
-                src="https://comments.mycafe24.com/comment-sidecar-js-delivery.php"
-                strategy="afterInteractive"
-                data-site="https://hhakorea.org"
-                data-page-id={slug}
-              />
-            </div>
-          )}            
+            <Script
+              src="https://comments.mycafe24.com/comment-sidecar-js-delivery.php"
+              strategy="afterInteractive"
+              data-site="https://hhakorea.org"
+              data-page-id={slug}
+            />
+          </div>
             
         </div>
       </div>
