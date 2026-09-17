@@ -19,6 +19,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" className={inter.className}>
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://comments.mycafe24.com/comment-sidecar-basic.css"
+        />
+      </head>    
       <body className="bg-white text-black antialiased dark:bg-gray-950 dark:text-white">
         <SectionContainer>
           <div className="flex h-screen flex-col justify-between font-sans">
