@@ -19,7 +19,7 @@ export default function CommentSidecar({ pageId }: CommentSidecarProps) {
     const script = document.createElement('script');
 
     script.src =
-      'https://comments.mycafe24.com/comment-sidecar-js-delivery.php';
+      'https://comments.mycafe24.com/comment-sidecar-js-delivery.php?lang=ko';
     script.async = true;
     script.dataset.site = 'https://hhakorea.org';
     script.dataset.pageId = pageId;
